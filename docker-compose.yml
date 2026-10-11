@@ -1,6 +1,7 @@
 services:
   todoappdb:
     image: mariadb:11
+    restart: unless-stopped
     container_name: todoappdb
     environment:
       MARIADB_ROOT_PASSWORD: sekrit
@@ -19,6 +20,8 @@ services:
       retries: 10
 
   todoapp:
+    image: todoapp-jenkins:latest
+    restart: unless-stopped
     build:
       context: ./TodoApp
     container_name: todoapp
