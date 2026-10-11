@@ -1,0 +1,30 @@
+# A new, isolated test database is created for each Jenkins build.
+services:
+  testdb:
+    image: todoapp-test-db:local
+    build:
+      context: .
+      dockerfile: Dockerfile.test-db
+    environment:
+      MARIADB_ROOT_PASSWORD: test-root
+      MARIADB_DATABASE: todo_test_db
+      MARIADB_USER: todo_usr
+      MARIADB_PASSWORD: letmeinplz
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+      start_period: 20s
+
+  tests:
+    image: todoapp-tests:local
+    build:
+      context: .
+      dockerfile: Dockerfile.tests
+    # The provided test JSON uses localhost:3306. Share testdb's network
+    # namespace so localhost reaches this temporary database only.
+    network_mode: "service:testdb"
+    depends_on:
+      testdb:
+        condition: service_healthy

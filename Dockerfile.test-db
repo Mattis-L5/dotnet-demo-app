@@ -1,0 +1,5 @@
+FROM mariadb:11
+
+# Initialize the temporary database with the application's own schema.
+# COPY also avoids bind mounts from Jenkins's container workspace.
+COPY TodoApp/schema.sql /docker-entrypoint-initdb.d/schema.sql
