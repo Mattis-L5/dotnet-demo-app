@@ -61,7 +61,7 @@ timeout(time: 30, unit: 'MINUTES') {
             sh '''
                 set -eu
                 curl --noproxy '*' --fail --silent --show-error \
-                    --retry 20 --retry-connrefused --retry-delay 3 \
+                    --retry 20 --retry-all-errors --retry-connrefused --retry-delay 3 \
                     --retry-max-time 90 --max-time 5 \
                     http://172.16.0.10:8081/ -o todoapp-response.html
                 grep -q 'Todo List' todoapp-response.html
